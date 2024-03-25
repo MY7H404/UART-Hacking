@@ -43,3 +43,15 @@ OPTIONS:
     -V, --version
             Print version information
 ```
+## Disclaimer
+
+This tool is created for educational and testing purposes only. The authors and contributors are not responsible for any illegal, unethical, or unauthorized use of this tool. Users are solely responsible for ensuring that their use of this tool complies with all applicable laws, regulations, and ethical standards.
+
+Usage of this tool on systems or networks without explicit authorization is strictly prohibited. The authors and contributors disclaim any responsibility for any damage, loss of data, or other consequences resulting from the use of this tool.
+
+By using this tool, you acknowledge that you have read, understood, and agree to abide by the terms of this disclaimer.
+
+**Use responsibly and ethically.**
+
+## License
+This project is licensed under the [MIT License.](https://github.com/MY7H404/UART-Hacking/blob/main/LICENSE)
