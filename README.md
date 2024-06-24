@@ -43,6 +43,10 @@ OPTIONS:
     -V, --version
             Print version information
 ```
+## Contribution
+
+Contributions to UART-Hacking are welcome. If you encounter issues or have suggestions for improvements, feel free to open an issue or submit a pull request.
+
 ## Disclaimer
 
 This tool is created for educational and testing purposes only. The authors and contributors are not responsible for any illegal, unethical, or unauthorized use of this tool. Users are solely responsible for ensuring that their use of this tool complies with all applicable laws, regulations, and ethical standards.
