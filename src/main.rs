@@ -1,11 +1,10 @@
-// Import necessary modules and crates
 use std::env; // Module for environment variables
 use clap::{App, Arg}; // Clap crate for parsing command-line arguments
 use std::io::{self, BufRead}; // Input/output module for reading input
 use std::fs::File; // File module for file operations
 use std::io::prelude::*; // Module for buffered I/O operations
 use std::time::Duration; // Module for defining time durations
-use serialport::{SerialPortSettings, SerialPort}; // Serialport crate for serial port operations
+use serialport::SerialPortSettings; // Serialport crate for serial port operations
 
 // Main function
 fn main() -> io::Result<()> {
@@ -96,7 +95,7 @@ fn main() -> io::Result<()> {
         .get_matches();
 
     // Retrieve values of command-line arguments
-    let device = matches.value_of("device").unwrap_or("/dev/tty0USB0");
+    let device = matches.value_of("device").unwrap_or("/dev/ttyUSB0");
     let baudrate = matches.value_of("baudrate").unwrap_or("115200");
     let username = matches.value_of("username").unwrap_or("root");
     let passwordfile = matches.value_of("passwordfile").unwrap_or("pass.txt");
@@ -105,7 +104,7 @@ fn main() -> io::Result<()> {
     let passwordprompt = matches.value_of("passwordprompt").unwrap_or("Password:");
     let timeout = matches.value_of("timeout").unwrap_or("1");
     let verbose = matches.is_present("verbose");
-    
+
     // Check if no command-line arguments were provided (excluding the program name)
     if env::args().len() <= 1 {
         // Display help message and exit
@@ -125,36 +124,36 @@ fn main() -> io::Result<()> {
     let mut ser = serialport::open_with_settings(device, &settings)?;
 
     // Open password file
-    let mut file = File::open(passwordfile)?;
+    let file = File::open(passwordfile)?;
+    let reader = io::BufReader::new(file);
 
-    // Read lines from the file
-    let mut password = String::new();
-    file.read_to_string(&mut password)?;
-
-    // Append newline character
-    password.push('\n');
-
-    // Read lines from serial port
-    let mut reader = io::BufReader::new(ser.try_clone()?);
-    let mut line = String::new();
-    loop {
-        reader.read_line(&mut line)?;
-        if line.trim() == loginsuccessstring {
-            println!("*** Success: Username: {} // Password: {}\n", username, password);
-            ser.write_all("exit".as_bytes())?;
-            break;
-        } else if line.trim() == usernameprompt {
-            let username = format!("{}\n", username);
-            ser.write_all(username.as_bytes())?;
-        } else if line.trim() == passwordprompt {
-            ser.write_all(password.as_bytes())?;
-            if verbose {
-                println!("Authenticating with Username: {} and Password: {}", username, password);
+    // Loop through each password in the file
+    for line in reader.lines() {
+        let password = line?.trim().to_string();
+        // Read lines from serial port
+        let mut ser_reader = io::BufReader::new(ser.try_clone()?);
+        let mut ser_line = String::new();
+        loop {
+            ser_reader.read_line(&mut ser_line)?;
+            if ser_line.trim() == loginsuccessstring {
+                println!("*** Success: Username: {} // Password: {}\n", username, password);
+                ser.write_all("exit\n".as_bytes())?; // Send exit command after success
+                return Ok(());
+            } else if ser_line.trim() == usernameprompt {
+                let user_str = format!("{}\n", username); // Append newline to username
+                ser.write_all(user_str.as_bytes())?; // Send username and press Enter
+            } else if ser_line.trim() == passwordprompt {
+                let pass_str = format!("{}\n", password); // Append newline to password
+                ser.write_all(pass_str.as_bytes())?; // Send password and press Enter
+                if verbose {
+                    println!("Trying Username: {} and Password: {}", username, password);
+                }
+                break;
             }
-            break;
+            ser_line.clear();
         }
-        line.clear();
     }
 
+    println!("Password brute force completed without success.");
     Ok(())
 }
