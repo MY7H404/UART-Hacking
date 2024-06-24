@@ -2,7 +2,7 @@
 A universal asynchronous receiver transmitter (UART) is a computer hardware standard for asynchronous serial communication in which data is encoded in a serial format and transmitted at configurable speed. The following tools are aimed at the hardware Security Tester and a written in Rust. 'sbrute' is login brute-forcing tool for UART. Most UART connected are used to login to an embedded system. This tool is designed to allow a user to brute force the UART authentication process.
 ```
 $ ./sbrute -h
-sbrute v1.0
+sbrute v1.1
 github.com/MY7H404
 A Rust-based tool for serial brute force attacks
 
