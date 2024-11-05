@@ -43,6 +43,16 @@ OPTIONS:
     -V, --version
             Print version information
 ```
+
+# Build
+First install Rust
+```
+git clone https://github.com/MY7H404/UART-Hacking.git
+cd UART-Hacking/src
+cargo build --release
+./target/release/UART-Hacking -h
+```
+
 ## Contribution
 
 Contributions to UART-Hacking are welcome. If you encounter issues or have suggestions for improvements, feel free to open an issue or submit a pull request.
